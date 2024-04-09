@@ -1,3 +1,15 @@
+/*
+ * @Author: Vincent Yang
+ * @Date: 2024-04-09 03:35:57
+ * @LastEditors: Vincent Yang
+ * @LastEditTime: 2024-04-09 04:48:58
+ * @FilePath: /discord-image/main.go
+ * @Telegram: https://t.me/missuo
+ * @GitHub: https://github.com/missuo
+ *
+ * Copyright © 2024 by Vincent, All Rights Reserved.
+ */
+
 package main
 
 import (
@@ -8,6 +20,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/missuo/discord-image/bot"
@@ -35,7 +48,9 @@ func main() {
 	go bot.Run()
 
 	// 创建 Gin 实例
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+	r.Use(cors.Default())
 	r.Static("/static", "./static")
 	// 上传图片的 API
 	r.POST("/upload", func(c *gin.Context) {
