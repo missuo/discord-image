@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Image Upload</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 400px;
+            margin-top: 50px;
+        }
+        .footer {
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .preview-img {
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+        .url-display {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .form-control {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="text-center">Discord Image</h1>
+    <p class="text-center">Upload your image to Discord</p>
+    <br>
+    <div class="custom-file">
+        <input type="file" class="custom-file-input" id="imageInput">
+        <label class="custom-file-label" for="imageInput">Choose image</label>
+    </div>
+    <button id="uploadButton" class="btn btn-primary btn-block mt-4">Upload Image</button>
+    <img id="imagePreview" class="preview-img" hidden>
+    <div class="url-display" hidden>
+        <input type="text" class="form-control" id="imageUrl" readonly>
+        <button class="btn btn-outline-secondary btn-sm" id="copyUrlButton">Copy</button>
+    </div>
+    <div class="footer">
+        <p>Powered by Discord & Cloudflare.<br>Made with love by Vincent.</p>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.custom-file-input').on('change', function() {
+            var fileName = $(this).val().split('\\').pop();
+            $(this).next('.custom-file-label').addClass("selected").html(fileName);
+        });
+
+        $('#uploadButton').click(function () {
+            var fileInput = document.getElementById('imageInput');
+            var file = fileInput.files[0];
+            if (file) {
+                var formData = new FormData();
+                formData.append('image', file);
+
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Network response was not ok.');
+                })
+                .then(data => {
+                    $('#imagePreview').attr('src', data.url).removeAttr('hidden');
+                    $('#imageUrl').val(data.url).parent().removeAttr('hidden');
+                    $('#copyUrlButton').click(function() {
+                        navigator.clipboard.writeText(data.url).then(() => {
+                            alert('Image URL copied to clipboard!');
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

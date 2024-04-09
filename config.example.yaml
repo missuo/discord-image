@@ -1,0 +1,9 @@
+bot:
+  token: ""
+  channel_id: ""
+
+upload:
+  temp_dir: "uploads"
+
+
+host: https://example.com
