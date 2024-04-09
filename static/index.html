@@ -1,73 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="https://assets-global.website-files.com/6257adef93867e50d84d30e2/6266bc493fb42d4e27bb8393_847541504914fd33810e70a0ea73177e.ico">
     <title>Discord Image Upload</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <style>
-        .container {
-            max-width: 400px;
-            margin-top: 50px;
-        }
-        .footer {
-            font-size: 0.8rem;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .preview-img {
-            margin-top: 20px;
-            max-width: 100%;
-            height: auto;
-        }
-        .url-display {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-        }
-        .form-control {
-            margin-right: 5px;
-        }
+      .container {
+        max-width: 400px;
+        margin-top: 50px;
+      }
+      .footer {
+        font-size: 0.8rem;
+        text-align: center;
+        margin-top: 20px;
+      }
+      .preview-img {
+        margin-top: 20px;
+        max-width: 100%;
+        height: auto;
+      }
+      .url-display {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+      }
+      .form-control {
+        margin-right: 5px;
+      }
     </style>
-</head>
-<body>
-
-<div class="container">
-    <h1 class="text-center">Discord Image</h1>
-    <p class="text-center">Upload your image to Discord</p>
-    <br>
-    <div class="custom-file">
-        <input type="file" class="custom-file-input" id="imageInput">
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="text-center">Discord Image</h1>
+      <p class="text-center">Upload your image to Discord</p>
+      <br />
+      <div class="custom-file">
+        <input type="file" class="custom-file-input" id="imageInput" />
         <label class="custom-file-label" for="imageInput">Choose image</label>
+      </div>
+      <button id="uploadButton" class="btn btn-primary btn-block mt-4">
+        Upload
+      </button>
+      <img id="imagePreview" class="preview-img" hidden />
+      <div class="url-display" hidden>
+        <input type="text" class="form-control" id="imageUrl" readonly />
+        <button class="btn btn-outline-secondary btn-sm" id="copyUrlButton">
+          Copy
+        </button>
+      </div>
+      <div class="footer">
+        <p>Powered by Discord & Cloudflare.<br />Made with love by Vincent.</p>
+      </div>
     </div>
-    <button id="uploadButton" class="btn btn-primary btn-block mt-4">Upload Image</button>
-    <img id="imagePreview" class="preview-img" hidden>
-    <div class="url-display" hidden>
-        <input type="text" class="form-control" id="imageUrl" readonly>
-        <button class="btn btn-outline-secondary btn-sm" id="copyUrlButton">Copy</button>
-    </div>
-    <div class="footer">
-        <p>Powered by Discord & Cloudflare.<br>Made with love by Vincent.</p>
-    </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('.custom-file-input').on('change', function() {
-            var fileName = $(this).val().split('\\').pop();
-            $(this).next('.custom-file-label').addClass("selected").html(fileName);
-        });
-
-        $('#uploadButton').click(function () {
-            var fileInput = document.getElementById('imageInput');
-            var file = fileInput.files[0];
-            if (file) {
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // 文件选择后立即检查大小
+            $('.custom-file-input').on('change', function() {
+                var fileName = $(this).val().split('\\').pop();
+                $(this).next('.custom-file-label').addClass("selected").html(fileName);
+                var file = this.files[0];
+                if(file && file.size > 26214400) { // 25MB in bytes
+                    alert("File size should not exceed 25MB");
+                    this.value = ""; // 清除选中的文件
+                    $(this).next('.custom-file-label').removeClass("selected").html("Choose image");
+                }
+            });
+    
+            // 上传按钮点击事件
+            $('#uploadButton').click(function () {
+                var fileInput = document.getElementById('imageInput');
+                var file = fileInput.files[0];
+                if (!file) {
+                    alert("Please select a file.");
+                    return;
+                }
+                if (file.size > 26214400) { // 再次检查文件大小
+                    alert("File size exceeds 25MB. Please select a smaller file.");
+                    return;
+                }
+    
                 var formData = new FormData();
                 formData.append('image', file);
-
+    
+                // 发起上传请求
                 fetch('/upload', {
                     method: 'POST',
                     body: formData,
@@ -76,7 +100,9 @@
                     if (response.ok) {
                         return response.json();
                     }
-                    throw new Error('Network response was not ok.');
+                    return response.json().then(json => {
+                        throw new Error(json.error || 'Network response was not ok.');
+                    });
                 })
                 .then(data => {
                     $('#imagePreview').attr('src', data.url).removeAttr('hidden');
@@ -89,11 +115,11 @@
                 })
                 .catch(error => {
                     console.error('There has been a problem with your fetch operation:', error);
+                    alert(error.message); // 显示从服务器返回的错误信息
                 });
-            }
+            });
         });
-    });
-</script>
-
-</body>
+    </script>
+    
+  </body>
 </html>
