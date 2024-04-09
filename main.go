@@ -2,7 +2,7 @@
  * @Author: Vincent Yang
  * @Date: 2024-04-09 03:35:57
  * @LastEditors: Vincent Young
- * @LastEditTime: 2024-04-09 15:45:00
+ * @LastEditTime: 2024-04-09 18:45:07
  * @FilePath: /discord-image/main.go
  * @Telegram: https://t.me/missuo
  * @GitHub: https://github.com/missuo
@@ -28,7 +28,7 @@ import (
 )
 
 func main() {
-	// Read configuration file
+	// Read config file
 	viper.SetConfigFile("config.yaml")
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("Failed to read config file: %v", err)
@@ -39,21 +39,20 @@ func main() {
 	proxyUrl := viper.GetString("proxy_url")
 	autoDelete := viper.GetBool("auto_delete")
 
-	// Create upload directory
+	// Make sure the upload directory exists
 	if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
 		log.Fatalf("Failed to create upload directory: %v", err)
 	}
 
-	// Start bot
+	// Start the bot
 	go bot.Run()
 
-	// Create Gin instance
+	// Create Gin server
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.Use(cors.Default())
 	r.Static("/static", "./static")
-
-	// API for uploading images
+	// Upload image API
 	r.POST("/upload", func(c *gin.Context) {
 		host := c.Request.Host
 		if proxyUrl != "" {
