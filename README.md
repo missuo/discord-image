@@ -67,3 +67,5 @@ location /
 
 Of course, you can use serverless tools like `Cloudflare Workers` to deploy Proxy URL.
 
+## License
+AGPL-3.0
