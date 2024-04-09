@@ -6,4 +6,4 @@ upload:
   temp_dir: "uploads"
 
 
-host: https://example.com
+proxy_url: https://example.com

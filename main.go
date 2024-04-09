@@ -1,8 +1,8 @@
 /*
  * @Author: Vincent Yang
  * @Date: 2024-04-09 03:35:57
- * @LastEditors: Vincent Yang
- * @LastEditTime: 2024-04-09 04:48:58
+ * @LastEditors: Vincent Young
+ * @LastEditTime: 2024-04-09 15:34:45
  * @FilePath: /discord-image/main.go
  * @Telegram: https://t.me/missuo
  * @GitHub: https://github.com/missuo
@@ -37,7 +37,7 @@ func main() {
 	bot.BotToken = viper.GetString("bot.token")
 	channelID := viper.GetString("bot.channel_id")
 	uploadDir := viper.GetString("upload.temp_dir")
-	host := viper.GetString("host")
+	proxyUrl := viper.GetString("proxy_url")
 
 	// 创建上传目录
 	if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
@@ -54,6 +54,11 @@ func main() {
 	r.Static("/static", "./static")
 	// 上传图片的 API
 	r.POST("/upload", func(c *gin.Context) {
+		host := c.Request.Host
+		if proxyUrl != "" {
+			host = proxyUrl
+		}
+
 		file, err := c.FormFile("image")
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -79,7 +84,7 @@ func main() {
 		}
 
 		// 返回访问图片的 URL
-		c.JSON(http.StatusOK, gin.H{"url": fmt.Sprintf("%s/image/%s", host, message.ID)})
+		c.JSON(http.StatusOK, gin.H{"url": fmt.Sprintf("https://%s/image/%s", host, message.ID)})
 	})
 
 	// 访问图片的 API
