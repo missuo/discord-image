@@ -17,7 +17,7 @@ Powerful image hosting / file sharing implemented using Discord Bot.
 
 ## Config files and environment variables
 
-`proxy_url` You can leave it unset, but the domain of Discord cannot be accessed in mainland China. If you want to access Discord in mainland China, you must configure this option. How to deploy the proxy url, please continue to read below.
+You can leave `proxy_url` unset, but the domain of Discord cannot be accessed in mainland China. If you want to access Discord in mainland China, you must configure this option. How to deploy the proxy url, please continue to read below.
 
 ```yaml
 bot:
