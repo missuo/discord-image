@@ -2,7 +2,7 @@
  * @Author: Vincent Yang
  * @Date: 2024-04-09 03:35:57
  * @LastEditors: Vincent Yang
- * @LastEditTime: 2024-04-09 19:03:16
+ * @LastEditTime: 2024-04-09 19:12:26
  * @FilePath: /discord-image/main.go
  * @Telegram: https://t.me/missuo
  * @GitHub: https://github.com/missuo
@@ -30,16 +30,37 @@ import (
 )
 
 func main() {
-	// Read config file
+	// Set default values for configuration
+	viper.SetDefault("bot.token", "")
+	viper.SetDefault("bot.channel_id", "")
+	viper.SetDefault("upload.temp_dir", "uploads")
+	viper.SetDefault("proxy_url", "")
+	viper.SetDefault("auto_delete", true)
+
+	// Read configuration from environment variables
+	viper.AutomaticEnv()
+
+	// Read configuration from config.yaml if it exists
 	viper.SetConfigFile("config.yaml")
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Failed to read config file: %v", err)
+	if err := viper.ReadInConfig(); err == nil {
+		log.Println("Using config file:", viper.ConfigFileUsed())
 	}
-	bot.BotToken = viper.GetString("bot.token")
+
+	botToken := viper.GetString("bot.token")
 	channelID := viper.GetString("bot.channel_id")
 	uploadDir := viper.GetString("upload.temp_dir")
 	proxyUrl := viper.GetString("proxy_url")
 	autoDelete := viper.GetBool("auto_delete")
+
+	// Make sure the required configuration values are set
+	if botToken == "" {
+		log.Fatal("BOT_TOKEN environment variable or bot.token in config.yaml is not set")
+	}
+	if channelID == "" {
+		log.Fatal("CHANNEL_ID environment variable or bot.channel_id in config.yaml is not set")
+	}
+
+	bot.BotToken = botToken
 
 	// Make sure the upload directory exists
 	if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
@@ -62,7 +83,6 @@ func main() {
 	r.POST("/upload", func(c *gin.Context) {
 		host := c.Request.Host
 		ipPortRegex := regexp.MustCompile(`^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d{1,5})?$`)
-
 		var linkPrefix string
 		if ipPortRegex.MatchString(host) {
 			linkPrefix = "http://" + host
@@ -111,7 +131,6 @@ func main() {
 
 	// API for accessing images
 	r.GET("/file/:id", func(c *gin.Context) {
-
 		messageID := c.Param("id")
 
 		// Query the bot to get the image URL

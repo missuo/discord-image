@@ -1,0 +1,13 @@
+services:
+  discord-image:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - BOT_TOKEN=your_bot_token
+      - CHANNEL_ID=your_channel_id
+      - UPLOAD_DIR=/app/uploads
+      - PROXY_URL=your_proxy_url
+      - AUTO_DELETE=true
+    volumes:
+      - ./uploads:/app/uploads
