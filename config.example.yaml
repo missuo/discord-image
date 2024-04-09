@@ -5,5 +5,5 @@ bot:
 upload:
   temp_dir: "uploads"
 
-
 proxy_url: example.com
+auto_delete: true
