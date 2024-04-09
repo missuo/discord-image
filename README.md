@@ -6,6 +6,8 @@
 
 Powerful image hosting / file sharing implemented using Discord Bot.
 
+**Deployment requires applying for a Discord account and creating a bot to obtain a Bot Token. However, this article will not mention these steps. Please Google how to do it yourself.**
+
 ## Features
 - Maximum supported single file size: 25MB.
 - Files never expire.
