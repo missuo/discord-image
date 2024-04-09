@@ -1,8 +1,8 @@
 /*
  * @Author: Vincent Yang
  * @Date: 2024-04-09 03:35:57
- * @LastEditors: Vincent Young
- * @LastEditTime: 2024-04-09 18:45:07
+ * @LastEditors: Vincent Yang
+ * @LastEditTime: 2024-04-09 19:03:16
  * @FilePath: /discord-image/main.go
  * @Telegram: https://t.me/missuo
  * @GitHub: https://github.com/missuo
@@ -18,6 +18,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -51,12 +53,21 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.Use(cors.Default())
-	r.Static("/static", "./static")
+
+	r.GET("/", func(c *gin.Context) {
+		c.File("./static/index.html")
+	})
+
 	// Upload image API
 	r.POST("/upload", func(c *gin.Context) {
 		host := c.Request.Host
-		if proxyUrl != "" {
-			host = proxyUrl
+		ipPortRegex := regexp.MustCompile(`^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d{1,5})?$`)
+
+		var linkPrefix string
+		if ipPortRegex.MatchString(host) {
+			linkPrefix = "http://" + host
+		} else {
+			linkPrefix = "https://" + host
 		}
 
 		file, err := c.FormFile("image")
@@ -95,11 +106,12 @@ func main() {
 		}
 
 		// Return the URL to access the image
-		c.JSON(http.StatusOK, gin.H{"url": fmt.Sprintf("https://%s/image/%s", host, message.ID)})
+		c.JSON(http.StatusOK, gin.H{"url": fmt.Sprintf("%s/file/%s", linkPrefix, message.ID)})
 	})
 
 	// API for accessing images
-	r.GET("/image/:id", func(c *gin.Context) {
+	r.GET("/file/:id", func(c *gin.Context) {
+
 		messageID := c.Param("id")
 
 		// Query the bot to get the image URL
@@ -107,6 +119,10 @@ func main() {
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
+		}
+
+		if proxyUrl != "" {
+			url = strings.Replace(url, "https://cdn.discordapp.com", "https://"+proxyUrl, 1)
 		}
 
 		// Redirect to the image URL
