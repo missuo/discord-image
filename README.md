@@ -17,6 +17,16 @@ Powerful image hosting / file sharing implemented using Discord Bot.
 - Support automatic deletion of files after uploading to the server, will not occupy your server's hard disk.
 - Support private deployment, secure and reliable.
 
+## Start with Docker
+
+```bash
+mkdir discord-image && cd discord-image
+wget -O compose.yaml https://raw.githubusercontent.com/missuo/discord-image/main/compose.yaml
+nano compose.yaml
+docker compose up -d
+```
+
+
 ## Config files and environment variables
 
 You can leave `proxy_url` unset, but the domain of Discord cannot be accessed in mainland China. If you want to access Discord in mainland China, you must configure this option. How to deploy the proxy url, please continue to read below.
