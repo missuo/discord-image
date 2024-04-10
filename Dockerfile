@@ -9,5 +9,5 @@ RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o discord-image .
 
 FROM alpine:latest
 WORKDIR /app
-COPY --from=builder /go/src/github.com/missuo/discord-image /app/discord-image
+COPY --from=builder /go/src/github.com/missuo/discord-image/discord-image /app/
 CMD ["/app/discord-image"]
