@@ -68,6 +68,8 @@ proxy_url: example.com # Custom proxy url for cdn.discordapp.com
 auto_delete: true # Automatically delete files after uploading to the server
 ```
 
+**If you are deploying using Docker, please ignore the above configuration files and use the relevant compose configuration directly.**
+
 ```yaml
 services:
   discord-image:
