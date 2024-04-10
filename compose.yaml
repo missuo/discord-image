@@ -1,6 +1,6 @@
 services:
   discord-image:
-    images: ghcr.io/missuo/discord-image
+    image: ghcr.io/missuo/discord-image
     ports:
       - "8080:8080"
     environment:
