@@ -2,7 +2,7 @@
  * @Author: Vincent Yang
  * @Date: 2024-04-09 03:35:57
  * @LastEditors: Vincent Yang
- * @LastEditTime: 2024-04-09 19:12:26
+ * @LastEditTime: 2024-04-09 20:28:44
  * @FilePath: /discord-image/main.go
  * @Telegram: https://t.me/missuo
  * @GitHub: https://github.com/missuo
@@ -39,6 +39,12 @@ func main() {
 
 	// Read configuration from environment variables
 	viper.AutomaticEnv()
+
+	viper.BindEnv("bot.token", "BOT_TOKEN")
+	viper.BindEnv("bot.channel_id", "CHANNEL_ID")
+	viper.BindEnv("upload.temp_dir", "UPLOAD_DIR")
+	viper.BindEnv("proxy_url", "PROXY_URL")
+	viper.BindEnv("auto_delete", "AUTO_DELETE")
 
 	// Read configuration from config.yaml if it exists
 	viper.SetConfigFile("config.yaml")
