@@ -4,7 +4,7 @@
 
 [1]: https://img.shields.io/github/actions/workflow/status/missuo/discord-image/release.yaml?logo=github
 [2]: https://img.shields.io/github/go-mod/go-version/missuo/discord-image?logo=go
-[6]: https://img.shields.io/docker/pulls/missuo/discord-image?logo=docker
+[3]: https://img.shields.io/docker/pulls/missuo/discord-image?logo=docker
 
 Powerful image hosting / file sharing implemented using Discord Bot.
 
