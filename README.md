@@ -86,7 +86,9 @@ services:
       - ./uploads:/app/uploads
 ```
 
-## Deploy proxy url
+## Deploy Proxy URL (Optional)
+
+**Deploying this proxy is only for accessing from Mainland China IPs. If you don't have this requirement, you don't need to deploy it.**
 
 If you are using Nginx, you can use the following configuration:
 
@@ -104,8 +106,7 @@ location /
 }
 ```
 
-Of course, you can use serverless tools like `Cloudflare Workers` to deploy Proxy URL.
-
+Of course, you can use serverless tools like `Cloudflare Workers` to deploy Proxy URL. If anyone has completed a workers configuration, feel free to submit a PR.
 
 ## Related Projects
 
