@@ -44,6 +44,8 @@ location / {
 
 You can leave `proxy_url` unset, but the domain of Discord cannot be accessed in mainland China. If you want to access Discord in mainland China, you must configure this option. How to deploy the proxy url, please continue to read below.
 
+Please be careful not to modify the `bot_token` at will. If you modify the `bot_token`, the previous file links may become invalid.
+
 ```yaml
 bot:
   token: "" # Discord bot token

@@ -2,7 +2,7 @@
  * @Author: Vincent Yang
  * @Date: 2024-04-09 03:36:13
  * @LastEditors: Vincent Yang
- * @LastEditTime: 2024-04-09 18:50:06
+ * @LastEditTime: 2024-04-10 18:08:24
  * @FilePath: /discord-image/bot/bot.go
  * @Telegram: https://t.me/missuo
  * @GitHub: https://github.com/missuo
@@ -49,6 +49,7 @@ func Run() {
 	os.Exit(0)
 }
 
+// SendImage sends an file to a Discord channel
 func SendImage(channelID, filename string) (*discordgo.Message, error) {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -71,6 +72,7 @@ func SendImage(channelID, filename string) (*discordgo.Message, error) {
 	return message, nil
 }
 
+// GetImageURL returns the latest URL of an file in a Discord message
 func GetImageURL(channelID, messageID string) (string, error) {
 	message, err := Discord.ChannelMessage(channelID, messageID)
 	if err != nil {
