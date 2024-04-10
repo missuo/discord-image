@@ -2,6 +2,7 @@ FROM golang:1.22 AS builder
 WORKDIR /go/src/github.com/missuo/discord-image
 COPY main.go ./
 COPY bot ./bot
+COPY static ./static
 COPY go.mod ./
 COPY go.sum ./
 RUN go get -d -v ./
