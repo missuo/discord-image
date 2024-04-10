@@ -25,7 +25,20 @@ wget -O compose.yaml https://raw.githubusercontent.com/missuo/discord-image/main
 nano compose.yaml
 docker compose up -d
 ```
+### Nginx Reverse Proxy
 
+```nginx
+location / {
+    proxy_pass http://localhost:8080;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header REMOTE-HOST $remote_addr;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $connection_upgrade;
+    proxy_http_version 1.1;
+} 
+```
 
 ## Config files and environment variables
 
