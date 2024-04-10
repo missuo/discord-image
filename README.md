@@ -106,5 +106,10 @@ location /
 
 Of course, you can use serverless tools like `Cloudflare Workers` to deploy Proxy URL.
 
+
+## Related Projects
+
+- [missuo/Telegraph-Image-Hosting](https://github.com/missuo/Telegraph-Image-Hosting)
+
 ## License
 AGPL-3.0
