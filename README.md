@@ -1,8 +1,10 @@
 [![GitHub Workflow][1]](https://github.com/missuo/discord-image/actions)
 [![Go Version][2]](https://github.com/missuo/discord-image/blob/main/go.mod)
+[![Docker Pulls][3]](https://hub.docker.com/r/missuo/discord-image)
 
 [1]: https://img.shields.io/github/actions/workflow/status/missuo/discord-image/release.yaml?logo=github
 [2]: https://img.shields.io/github/go-mod/go-version/missuo/discord-image?logo=go
+[6]: https://img.shields.io/docker/pulls/missuo/discord-image?logo=docker
 
 Powerful image hosting / file sharing implemented using Discord Bot.
 
@@ -16,6 +18,14 @@ Powerful image hosting / file sharing implemented using Discord Bot.
 - Support custom proxy url.
 - Support automatic deletion of files after uploading to the server, will not occupy your server's hard disk.
 - Support private deployment, secure and reliable.
+
+## Preview
+
+You can click here to test the demo I deployed: [https://dc.missuo.ru](https://dc.missuo.ru)
+
+The configuration file used by the above demo sets the `proxy_url` and enables `auto_delete`. So you can access files normally in mainland China.
+
+![Demo](./screenshot/image.png)
 
 ## Start with Docker
 
