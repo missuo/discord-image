@@ -7,7 +7,7 @@ services:
       - BOT_TOKEN=your_bot_token
       - CHANNEL_ID=your_channel_id
       - UPLOAD_DIR=/app/uploads
-      #- PROXY_URL=your_proxy_url # If you want to access in mainland China, you must configure this item.
+      #- PROXY_URL=your_proxy_url # If you want to access in mainland China, you must set this item.
       - AUTO_DELETE=true
     volumes:
       - ./uploads:/app/uploads
