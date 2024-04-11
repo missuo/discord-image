@@ -27,6 +27,8 @@ The configuration file used by the above demo sets the `proxy_url` and enables `
 
 ![Demo](./screenshot/image.png)
 
+If you are interested in the implementation principle, you can read [https://missuo.me/posts/discord-file-sharing/](https://missuo.me/posts/discord-file-sharing/).
+
 ## Start with Docker
 
 ```bash
