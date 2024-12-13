@@ -1,4 +1,4 @@
-FROM golang:1.22 AS builder
+FROM golang:1.23.4 AS builder
 WORKDIR /go/src/github.com/missuo/discord-image
 COPY main.go ./
 COPY bot ./bot
