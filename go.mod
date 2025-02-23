@@ -1,6 +1,6 @@
 module github.com/missuo/discord-image
 
-go 1.23.4
+go 1.24.0
 
 require (
 	github.com/bwmarrin/discordgo v0.28.1
