@@ -11,7 +11,10 @@ Powerful image hosting / file sharing implemented using Discord Bot.
 **Deployment requires applying for a Discord account and creating a bot to obtain a Bot Token. However, this article will not mention these steps. Please Google how to do it yourself.**
 
 ## Features
-- Maximum supported single file size: 25MB.
+- Maximum supported single file size:
+  - Free users: 10MB
+  - Discord Nitro Basic: 50MB
+  - Discord Nitro: 500MB
 - Files never expire.
 - Support viewing upload history, support deleting file.
 - Support for uploading images, videos, and other files.
@@ -21,7 +24,9 @@ Powerful image hosting / file sharing implemented using Discord Bot.
 
 ## Preview
 
-You can click here to test the demo I deployed: [https://dc.missuo.ru](https://dc.missuo.ru)
+You can click here to test the demo I deployed:
+- Cloudflare CDN: [https://dc.missuo.ru](https://dc.missuo.ru)
+- EdgeOne CDN: [https://dc.deeeee.de](https://dc.deeeee.de)
 
 The configuration file used by the above demo sets the `proxy_url` and enables `auto_delete`. So you can access files normally in mainland China.
 
