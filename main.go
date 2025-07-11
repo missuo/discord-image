@@ -2,7 +2,7 @@
  * @Author: Vincent Yang
  * @Date: 2024-04-09 03:35:57
  * @LastEditors: Vincent Yang
- * @LastEditTime: 2024-04-09 20:28:44
+ * @LastEditTime: 2025-07-12 04:55:18
  * @FilePath: /discord-image/main.go
  * @Telegram: https://t.me/missuo
  * @GitHub: https://github.com/missuo
@@ -81,7 +81,6 @@ func main() {
 	r := gin.Default()
 	r.Use(cors.Default())
 
-	// API routes must be defined before static file serving
 	// Upload image API
 	r.POST("/upload", func(c *gin.Context) {
 		host := c.Request.Host
@@ -151,11 +150,21 @@ func main() {
 		c.Redirect(http.StatusFound, url)
 	})
 
-	// Serve static files from public directory (Next.js export)
-	// This must come after all API routes to avoid conflicts
-	r.Static("/", "./public")
-	
-	// Fallback for SPA routing - serve index.html for any route that doesn't match static files or API routes
+	// Serve Next.js static assets
+	r.Static("/_next", "./public/_next")
+	r.StaticFile("/favicon.ico", "./public/favicon.ico")
+	r.StaticFile("/next.svg", "./public/next.svg")
+	r.StaticFile("/vercel.svg", "./public/vercel.svg")
+	r.StaticFile("/file.svg", "./public/file.svg")
+	r.StaticFile("/globe.svg", "./public/globe.svg")
+	r.StaticFile("/window.svg", "./public/window.svg")
+
+	// Serve main page and handle SPA routing
+	r.GET("/", func(c *gin.Context) {
+		c.File("./public/index.html")
+	})
+
+	// Fallback for SPA routing - serve index.html for any unmatched routes
 	r.NoRoute(func(c *gin.Context) {
 		c.File("./public/index.html")
 	})
