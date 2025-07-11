@@ -21,3 +21,6 @@
 go.work
 uploads
 config.yaml
+
+# macOS files
+.DS_Store
