@@ -42,10 +42,10 @@ export default function UploadZone() {
       return;
     }
 
-    if (file.size > 25 * 1024 * 1024) {
+    if (file.size > 10 * 1024 * 1024) {
       toast({
         title: "File too large",
-        description: "Image size must be less than 25MB.",
+        description: "Image size must be less than 10MB.",
         variant: "destructive",
       });
       return;
@@ -196,7 +196,7 @@ export default function UploadZone() {
               </div>
               
               <div className="mt-6 text-xs text-gray-500 dark:text-gray-400">
-                Maximum file size: 25MB • Supported formats: PNG, JPG, GIF, WebP
+                Maximum file size: 10MB • Supported formats: PNG, JPG, GIF, WebP
               </div>
             </div>
             
