@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
-import { Upload, Image, Copy, Link } from "lucide-react";
+import { Upload, Copy, Link } from "lucide-react";
 
 interface UploadResult {
   url: string;
@@ -146,45 +146,60 @@ export default function UploadZone() {
   }, [handlePaste]);
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-4">
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Image className="w-6 h-6" />
-            Discord Image Upload
-          </CardTitle>
-          <CardDescription>
-            Upload your images to Discord. Supports drag & drop and clipboard paste.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+    <div className="w-full max-w-4xl mx-auto">
+      <Card className="mb-6 shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+        <CardContent className="p-8">
           <div
-            className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+            className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 ${
               isDragging
-                ? "border-primary bg-primary/10"
-                : "border-muted-foreground/25 hover:border-muted-foreground/50"
+                ? "border-blue-500 bg-blue-50/50 dark:bg-blue-900/20 scale-105"
+                : "border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-gray-50/50 dark:hover:bg-gray-700/50"
             }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
           >
-            <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-            <p className="text-lg mb-2">
-              {isDragging ? "Drop your image here" : "Drag & drop an image here"}
-            </p>
-            <p className="text-sm text-muted-foreground mb-4">
-              or click to browse files (max 25MB)
-            </p>
-            <p className="text-sm text-muted-foreground mb-4">
-              You can also paste images from clipboard (Ctrl/Cmd + V)
-            </p>
-            <Button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploading}
-              size="lg"
-            >
-              {uploading ? "Uploading..." : "Select Image"}
-            </Button>
+            <div className="flex flex-col items-center">
+              <div className={`p-4 rounded-full mb-6 transition-all duration-300 ${
+                isDragging 
+                  ? "bg-blue-100 dark:bg-blue-900/40" 
+                  : "bg-gray-100 dark:bg-gray-700"
+              }`}>
+                <Upload className={`w-12 h-12 transition-colors ${
+                  isDragging 
+                    ? "text-blue-600 dark:text-blue-400" 
+                    : "text-gray-400 dark:text-gray-500"
+                }`} />
+              </div>
+              
+              <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
+                {isDragging ? "Drop your image here" : "Upload your image"}
+              </h3>
+              
+              <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md">
+                Drag & drop, browse files, or paste from clipboard
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <Button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  size="lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg font-medium transition-all duration-200"
+                >
+                  {uploading ? "Uploading..." : "Browse Files"}
+                </Button>
+                
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  or press <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs font-mono">Ctrl+V</kbd>
+                </div>
+              </div>
+              
+              <div className="mt-6 text-xs text-gray-500 dark:text-gray-400">
+                Maximum file size: 25MB • Supported formats: PNG, JPG, GIF, WebP
+              </div>
+            </div>
+            
             <Input
               ref={fileInputRef}
               type="file"
@@ -197,69 +212,88 @@ export default function UploadZone() {
       </Card>
 
       {uploadResult && linkFormats && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Link className="w-5 h-5" />
+        <Card className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-3 text-xl">
+              <div className="p-2 bg-green-100 dark:bg-green-900/40 rounded-lg">
+                <Link className="w-5 h-5 text-green-600 dark:text-green-400" />
+              </div>
               Upload Complete
             </CardTitle>
-            <CardDescription>
-              Your image has been uploaded. Copy the links below:
+            <CardDescription className="text-base">
+              Your image has been uploaded successfully. Choose your preferred format:
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium min-w-[80px]">Direct URL:</label>
-              <Input
-                readOnly
-                value={linkFormats.direct}
-                className="flex-1"
-              />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => copyToClipboard(linkFormats.direct, "Direct URL")}
-              >
-                <Copy className="w-4 h-4" />
-              </Button>
+          <CardContent className="space-y-6">
+            <div className="grid gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Direct URL</label>
+                <div className="flex gap-2">
+                  <Input
+                    readOnly
+                    value={linkFormats.direct}
+                    className="flex-1 font-mono text-sm bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-600"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copyToClipboard(linkFormats.direct, "Direct URL")}
+                    className="shrink-0 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Markdown</label>
+                <div className="flex gap-2">
+                  <Input
+                    readOnly
+                    value={linkFormats.markdown}
+                    className="flex-1 font-mono text-sm bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-600"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copyToClipboard(linkFormats.markdown, "Markdown")}
+                    className="shrink-0 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">HTML</label>
+                <div className="flex gap-2">
+                  <Input
+                    readOnly
+                    value={linkFormats.html}
+                    className="flex-1 font-mono text-sm bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-600"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copyToClipboard(linkFormats.html, "HTML")}
+                    className="shrink-0 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium min-w-[80px]">Markdown:</label>
-              <Input
-                readOnly
-                value={linkFormats.markdown}
-                className="flex-1"
-              />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => copyToClipboard(linkFormats.markdown, "Markdown")}
-              >
-                <Copy className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium min-w-[80px]">HTML:</label>
-              <Input
-                readOnly
-                value={linkFormats.html}
-                className="flex-1"
-              />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => copyToClipboard(linkFormats.html, "HTML")}
-              >
-                <Copy className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="mt-4 p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground mb-2">Preview:</p>
-              <img
-                src={uploadResult.url}
-                alt="Uploaded image preview"
-                className="max-w-full max-h-64 object-contain rounded-lg border"
-              />
+            
+            <div className="pt-4 border-t border-gray-200 dark:border-gray-600">
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Preview</p>
+              <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-600">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={uploadResult.url}
+                  alt="Uploaded image preview"
+                  className="max-w-full max-h-80 object-contain rounded-lg mx-auto shadow-sm"
+                />
+              </div>
             </div>
           </CardContent>
         </Card>
