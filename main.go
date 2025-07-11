@@ -81,18 +81,7 @@ func main() {
 	r := gin.Default()
 	r.Use(cors.Default())
 
-	// Serve static files from public directory (Next.js export)
-	r.Static("/", "./public")
-	
-	// Fallback for API routes - serve index.html for any route that doesn't match static files
-	r.NoRoute(func(c *gin.Context) {
-		if strings.HasPrefix(c.Request.URL.Path, "/upload") || strings.HasPrefix(c.Request.URL.Path, "/file") {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Not found"})
-			return
-		}
-		c.File("./public/index.html")
-	})
-
+	// API routes must be defined before static file serving
 	// Upload image API
 	r.POST("/upload", func(c *gin.Context) {
 		host := c.Request.Host
@@ -160,6 +149,15 @@ func main() {
 
 		// Redirect to the image URL
 		c.Redirect(http.StatusFound, url)
+	})
+
+	// Serve static files from public directory (Next.js export)
+	// This must come after all API routes to avoid conflicts
+	r.Static("/", "./public")
+	
+	// Fallback for SPA routing - serve index.html for any route that doesn't match static files or API routes
+	r.NoRoute(func(c *gin.Context) {
+		c.File("./public/index.html")
 	})
 
 	// Start Gin server
