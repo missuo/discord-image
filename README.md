@@ -6,43 +6,47 @@
 [2]: https://img.shields.io/github/go-mod/go-version/missuo/discord-image?logo=go
 [3]: https://img.shields.io/docker/pulls/missuo/discord-image?logo=docker
 
-Powerful image hosting / file sharing implemented using Discord Bot.
+# Discord Image
 
-**Deployment requires applying for a Discord account and creating a bot to obtain a Bot Token. However, this article will not mention these steps. Please Google how to do it yourself.**
+A powerful image hosting and file sharing service built with Discord Bot technology.
+
+**Note: Deployment requires a Discord Bot Token. You'll need to create a Discord application and bot to obtain this token. Please refer to Discord's official documentation for setup instructions.**
 
 ## Features
-- Maximum supported single file size:
+
+- **File size limits based on Discord tier:**
   - Free users: 10MB
   - Discord Nitro Basic: 50MB
   - Discord Nitro: 500MB
-- Files never expire.
-- Support viewing upload history, support deleting file.
-- Support for uploading images, videos, and other files.
-- Support custom proxy url.
-- Support automatic deletion of files after uploading to the server, will not occupy your server's hard disk.
-- Support private deployment, secure and reliable.
+- **Permanent storage** - Files never expire
+- **Upload management** - View upload history and delete files
+- **Multi-format support** - Images, videos, and other file types
+- **Custom proxy support** - Configure custom proxy URLs for better accessibility
+- **Server-friendly** - Automatic file cleanup option to save server disk space
+- **Self-hosted** - Private deployment for enhanced security and control
 
-## Preview
+## Live Demo
 
-You can click here to test the demo I deployed:
+Try the live demo at these endpoints:
 - Cloudflare CDN: [https://dc.missuo.ru](https://dc.missuo.ru)
 - EdgeOne CDN: [https://dc.deeeee.de](https://dc.deeeee.de)
 
-The configuration file used by the above demo sets the `proxy_url` and enables `auto_delete`. So you can access files normally in mainland China.
+*Note: The demo configuration includes `proxy_url` and `auto_delete` settings for optimal performance in mainland China.*
 
-![Demo](./screenshot/image.png)
+![Demo Screenshot](./screenshot/image.png)
 
-If you are interested in the implementation principle, you can read [https://missuo.me/posts/discord-file-sharing/](https://missuo.me/posts/discord-file-sharing/).
+For technical details about the implementation, read the blog post: [https://missuo.me/posts/discord-file-sharing/](https://missuo.me/posts/discord-file-sharing/)
 
-## Start with Docker
+## Quick Start with Docker
 
 ```bash
 mkdir discord-image && cd discord-image
 wget -O compose.yaml https://raw.githubusercontent.com/missuo/discord-image/main/compose.yaml
-nano compose.yaml
+nano compose.yaml  # Edit configuration
 docker compose up -d
 ```
-### Nginx Reverse Proxy
+
+### Nginx Reverse Proxy Configuration
 
 ```nginx
 location / {
@@ -57,51 +61,57 @@ location / {
 } 
 ```
 
-## Config files and environment variables
+## Configuration
 
-You can leave `proxy_url` unset, but the domain of Discord cannot be accessed in mainland China. If you want to access Discord in mainland China, you must configure this option. How to deploy the proxy url, please continue to read below.
+### Configuration File
 
-Please be careful not to modify the `bot_token` at will. If you modify the `bot_token`, the previous file links may become invalid.
+**Important:** Do not change the `bot_token` after initial setup, as this may invalidate existing file links.
 
 ```yaml
 bot:
   token: "" # Discord bot token
-  channel_id: "" # Channel ID
+  channel_id: "" # Target channel ID
 
 upload:
-  temp_dir: "uploads" # Temporary directory for storing files
+  temp_dir: "uploads" # Temporary directory for file storage
 
-proxy_url: example.com # Custom proxy url for cdn.discordapp.com
-auto_delete: true # Automatically delete files after uploading to the server
+proxy_url: example.com # Custom proxy URL for cdn.discordapp.com (optional)
+auto_delete: true # Auto-delete files from server after upload
 ```
 
-**If you are deploying using Docker, please ignore the above configuration files and use the relevant compose configuration directly.**
+### Docker Environment Variables
+
+For Docker deployments, use these environment variables instead of the configuration file:
 
 ```yaml
 services:
   discord-image:
-    images: ghcr.io/missuo/discord-image
+    image: ghcr.io/missuo/discord-image
     ports:
       - "8080:8080"
     environment:
       - BOT_TOKEN=your_bot_token
       - CHANNEL_ID=your_channel_id
       - UPLOAD_DIR=/app/uploads
-      - PROXY_URL=your_proxy_url
+      - PROXY_URL=your_proxy_url  # Optional
       - AUTO_DELETE=true
     volumes:
       - ./uploads:/app/uploads
 ```
 
-## Deploy Proxy URL (Optional)
+### Configuration Notes
 
-**Deploying this proxy is only for accessing from Mainland China IPs. If you don't have this requirement, you don't need to deploy it.**
+- **proxy_url**: Optional setting for accessing Discord CDN from mainland China. If not needed, leave unset.
+- **auto_delete**: Saves server disk space by removing files after successful upload to Discord.
 
-If you are using Nginx, you can use the following configuration:
+## Setting Up Proxy URL (Optional)
+
+**Only required for mainland China access. Skip this section if not applicable.**
+
+### Nginx Proxy Configuration
 
 ```nginx
-location /
-{
+location / {
     proxy_pass https://cdn.discordapp.com;
     proxy_set_header Host cdn.discordapp.com;
     proxy_set_header X-Real-IP $remote_addr;
@@ -113,11 +123,14 @@ location /
 }
 ```
 
-Of course, you can use serverless tools like `Cloudflare Workers` to deploy Proxy URL. If anyone has completed a workers configuration, feel free to submit a PR.
+### Alternative: Cloudflare Workers
+
+You can also deploy the proxy using serverless solutions like Cloudflare Workers. Community contributions for Workers configurations are welcome via PR.
 
 ## Related Projects
 
 - [missuo/Telegraph-Image-Hosting](https://github.com/missuo/Telegraph-Image-Hosting)
 
 ## License
+
 AGPL-3.0
